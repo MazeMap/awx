@@ -515,6 +515,12 @@ metadata:
 
 spec:
 {% if kubernetes_ingress_hostname is defined %}
+  tls:
+  - hosts:
+    - {{ kubernetes_ingress_hostname }}
+{% if kubernetes_ingress_tls_secret is defined %}
+    secretName: {{ kubernetes_ingress_tls_secret }}
+{% endif %}
   rules:
   - host: {{ kubernetes_ingress_hostname }}
     http:

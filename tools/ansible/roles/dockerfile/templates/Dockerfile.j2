@@ -62,6 +62,7 @@ ADD requirements/requirements_ansible.txt \
 
 RUN cd /tmp && make requirements_awx requirements_ansible_py3
 RUN cd /tmp && make requirements_collections
+RUN cd /tmp && make requirements_custom
 
 {% if (build_dev|bool) or (kube_dev|bool) %}
 ADD requirements/requirements_dev.txt /tmp/requirements
@@ -90,6 +91,7 @@ USER root
 
 # Install runtime requirements
 RUN dnf -y module enable 'postgresql:12'
+ADD tools/ansible/roles/dockerfile/files/google-cloud-sdk.repo /etc/yum.repos.d/google-cloud-sdk.repo
 RUN dnf -y update && \
     dnf -y install epel-release 'dnf-command(config-manager)' && \
     dnf module -y enable 'postgresql:12' && \
@@ -100,6 +102,7 @@ RUN dnf -y update && \
     git-core \
     git-lfs \
     glibc-langpack-en \
+    google-cloud-sdk \
     krb5-workstation \
     libcgroup-tools \
     nginx \
@@ -199,6 +202,8 @@ ADD tools/ansible/roles/dockerfile/files/settings.py /etc/tower/settings.py
 ADD {{ template_dest }}/supervisor.conf /etc/supervisord.conf
 ADD {{ template_dest }}/supervisor_task.conf /etc/supervisord_task.conf
 ADD tools/scripts/config-watcher /usr/bin/config-watcher
+RUN chmod 0755 /usr/bin/launch_awx.sh
+RUN chmod 0755 /usr/bin/launch_awx_task.sh
 {% endif %}
 {% if (build_dev|bool) or (kube_dev|bool) %}
 ADD tools/docker-compose/awx.egg-link /tmp/awx.egg-link
@@ -227,6 +232,8 @@ RUN for dir in \
 RUN chmod u+s /usr/bin/bwrap ; \
     chgrp -R root ${COLLECTION_BASE} ; \
     chmod -R g+rw ${COLLECTION_BASE}
+
+
 
 {% if (build_dev|bool) or (kube_dev|bool) %}
 RUN for dir in \

@@ -181,6 +181,11 @@ requirements_ansible_dev:
 		$(VENV_BASE)/ansible/bin/pip install pytest mock; \
 	fi
 
+requirements_custom:
+	mkdir -p $(VENV_BASE)/mazemap
+	virtualenv $(VENV_BASE)/mazemap
+	$(VENV_BASE)/mazemap/bin/pip3 install psutil kubernetes==11.0.0 openshift more-itertools kubernetes-validate gitpython
+
 # Install third-party requirements needed for AWX's environment.
 # this does not use system site packages intentionally
 requirements_awx: virtualenv_awx
