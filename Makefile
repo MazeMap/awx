@@ -206,6 +206,11 @@ requirements_dev: requirements_awx requirements_ansible_py3 requirements_awx_dev
 
 requirements_test: requirements
 
+requirements_custom:
+	mkdir -p $(VENV_BASE)/mazemap
+	virtualenv $(VENV_BASE)/mazemap
+	$(VENV_BASE)/mazemap/bin/pip3 install psutil kubernetes==11.0.0 openshift more-itertools kubernetes-validate gitpython
+
 # "Install" awx package in development mode.
 develop:
 	@if [ "$(VIRTUAL_ENV)" ]; then \

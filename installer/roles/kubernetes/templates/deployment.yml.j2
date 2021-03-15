@@ -537,7 +537,9 @@ spec:
   tls:
   - hosts:
     - {{ kubernetes_ingress_hostname }}
+{% if kubernetes_ingress_tls_secret is defined %}
     secretName: {{ kubernetes_ingress_tls_secret }}
+{% endif %}
 {% endif %}
 {% endif %}
 {% if openshift_host is defined %}
